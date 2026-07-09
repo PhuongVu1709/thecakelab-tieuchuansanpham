@@ -9,8 +9,13 @@
     window.location.replace('index.html');
   }
 </script>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#F37021">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     /* Bảng màu chuẩn The Cake Lab — Pantone 3564U Channel Orange (60%),
@@ -35,7 +40,7 @@
     margin:0;
     background:var(--cream);
     color:var(--ink);
-    font-family:'DM Sans', sans-serif;
+    font-family:'Poppins', sans-serif;
     min-height:100vh;
   }
   header.top{
@@ -60,14 +65,14 @@
     border-radius:999px;
     background:var(--orange);
     display:inline-flex; align-items:center; justify-content:center;
-    font-family:'DM Sans', sans-serif; font-weight:700; color:#fff;
+    font-family:'Poppins', sans-serif; font-weight:700; color:#fff;
     font-size:14px; letter-spacing:0.16em; text-transform:uppercase;
     flex-shrink:0;
     box-shadow:0 6px 16px rgba(243,112,33,0.35);
   }
   .brand-name{font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:0; font-weight:700;}
   h1.title{
-    font-family:'Fraunces', serif;
+    font-family:'Playfair Display', serif;
     font-weight:600;
     font-size:clamp(26px, 4vw, 36px);
     margin:14px 0 4px;
@@ -86,7 +91,7 @@
     padding:14px 10px;
     border:none; border-radius:14px 14px 0 0;
     background:var(--line); color:var(--muted);
-    font-family:'DM Sans', sans-serif; font-weight:700; font-size:14px;
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:14px;
     cursor:pointer;
     box-shadow:var(--shadow);
   }
@@ -106,7 +111,7 @@
   .field.full{grid-column:1 / -1;}
   label{font-size:12px; font-weight:700; letter-spacing:0.03em; color:var(--ink); text-transform:uppercase;}
   input[type=text], input[type=date], select, textarea{
-    font-family:'DM Sans', sans-serif;
+    font-family:'Poppins', sans-serif;
     font-size:15px;
     padding:11px 12px;
     border:1.5px solid var(--line);
@@ -150,11 +155,25 @@
   button.primary{
     background:var(--orange); color:#fff; border:none;
     padding:13px 26px; border-radius:999px;
-    font-family:'DM Sans', sans-serif; font-weight:700; font-size:14.5px;
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:14.5px;
     cursor:pointer;
   }
   button.primary:hover{background:var(--orange-dark);}
   button.primary:disabled{background:rgba(243,112,33,0.4); cursor:not-allowed;}
+  button.secondary{
+    background:transparent; color:var(--muted); border:1.5px solid var(--line);
+    padding:11px 22px; border-radius:999px;
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:14px;
+    cursor:pointer;
+  }
+  button.secondary:hover{ border-color:var(--orange); color:var(--orange-dark); }
+  button.danger{
+    background:#fff; color:var(--error); border:1.5px solid var(--error);
+    padding:13px 26px; border-radius:999px;
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:14.5px;
+    cursor:pointer;
+  }
+  button.danger:hover{ background:var(--error); color:#fff; }
   .status-msg{font-size:13.5px; font-weight:600;}
   .status-msg.ok{color:var(--success);}
   .status-msg.err{color:var(--error);}
@@ -178,7 +197,7 @@
   }
   .prod-card .body{padding:8px 9px 9px;}
   .prod-card h3{
-    font-family:'DM Sans', sans-serif; font-size:13px; line-height:1.25;
+    font-family:'Poppins', sans-serif; font-size:13px; line-height:1.25;
     margin:0; font-weight:700; color:var(--orange);
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   }
@@ -203,7 +222,7 @@
     background:#fff; border-radius:16px; max-width:560px; width:100%;
     max-height:85vh; overflow-y:auto; padding:24px;
   }
-  .modal-box h2{font-family:'Fraunces', serif; margin-top:0; color:var(--orange); font-weight:600;}
+  .modal-box h2{font-family:'Playfair Display', serif; margin-top:0; color:var(--orange); font-weight:600;}
   .modal-imgs{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px;}
   .modal-imgs img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; background:#EFE6D6;}
   .modal-imgs .cap{font-size:10.5px; text-align:center; color:var(--muted); margin-top:3px;}
@@ -213,6 +232,38 @@
   .modal-close{
     float:right; border:none; background:var(--ink); color:#fff; width:30px; height:30px;
     border-radius:50%; cursor:pointer; font-size:15px;
+  }
+  .modal-actions{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;}
+  .modal-actions .primary, .modal-actions .danger{flex:1; min-width:140px;}
+
+  /* Password confirm popup */
+  .password-modal-box{max-width:380px; text-align:center;}
+  .password-modal-box h2{font-size:20px;}
+  .password-modal-msg{color:var(--muted); font-size:13.5px; margin:0 0 18px; line-height:1.5;}
+  .password-modal-box .input-wrap{position:relative; text-align:left;}
+  .password-modal-box input[type=password], .password-modal-box input[type=text]{
+    width:100%;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    padding:12px 44px 12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FFFDF9;
+    color:var(--ink);
+    outline:none;
+  }
+  .password-modal-box input:focus{ border-color:var(--orange); }
+  .password-modal-box .toggle-eye{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:32px; height:32px;
+    border:none; background:transparent; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:17px; padding:0;
+  }
+  .password-modal-box .toggle-eye:hover{ color:var(--orange); }
+  .password-modal-error{
+    min-height:18px; margin-top:10px; font-size:13px; font-weight:600;
+    color:var(--error); text-align:left;
   }
 
   @media (max-width:560px){
@@ -307,6 +358,7 @@
 
       <div class="submit-row">
         <button type="submit" class="primary" id="submitBtn">Lưu Sản Phẩm</button>
+        <button type="button" class="secondary" id="cancelEditBtn" hidden>Huỷ Chỉnh Sửa</button>
         <span id="statusMsg" class="status-msg"></span>
       </div>
     </form>
@@ -334,73 +386,150 @@
   <div class="modal-box" id="modalBox"></div>
 </div>
 
+<div class="modal-overlay" id="passwordModalOverlay" hidden>
+  <div class="modal-box password-modal-box">
+    <h2>Xác Nhận Thao Tác</h2>
+    <p class="password-modal-msg" id="passwordModalMsg"></p>
+    <div class="input-wrap">
+      <input type="password" id="actionPasswordInput" placeholder="Nhập mật khẩu..." autocomplete="off">
+      <button type="button" class="toggle-eye" id="actionPasswordEyeBtn" aria-label="Hiện/ẩn mật khẩu">👁</button>
+    </div>
+    <div class="password-modal-error" id="passwordModalError"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary" id="passwordModalCancelBtn">Huỷ</button>
+      <button type="button" class="primary" id="passwordModalConfirmBtn">Xác Nhận</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ================== CẤU HÌNH ================== */
 // Dán URL Web App (Apps Script) đã deploy vào đây
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQGSoU7yCljIeY9tLa6pcniZiFjCyOv_vuJyYwB0QkkPKI0cJSRdZHepKAbpDfU4640Q/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb5GfqTHjZCHlTiWAx8p1ru2uu1-K8oP-mN_c-vfPpYb0I-Dpue4xyCjdcdf-DKdAk4w/exec";
+// Mật khẩu riêng cho thao tác Cập Nhật / Xoá sản phẩm (khác mã xác nhận đăng nhập)
+const ACTION_PASSWORD = "tcl2708";
 /* ================================================ */
+
+// Popup hỏi mật khẩu thao tác (Cập nhật / Xoá). Trả về Promise<boolean>:
+// true nếu nhập đúng mật khẩu và bấm Xác Nhận, false nếu bấm Huỷ/đóng popup.
+// Nhập sai không đóng popup — báo lỗi tại chỗ và cho nhập lại.
+const passwordModalOverlay = document.getElementById('passwordModalOverlay');
+const passwordModalMsg = document.getElementById('passwordModalMsg');
+const passwordModalError = document.getElementById('passwordModalError');
+const actionPasswordInput = document.getElementById('actionPasswordInput');
+const actionPasswordEyeBtn = document.getElementById('actionPasswordEyeBtn');
+const passwordModalCancelBtn = document.getElementById('passwordModalCancelBtn');
+const passwordModalConfirmBtn = document.getElementById('passwordModalConfirmBtn');
+
+actionPasswordEyeBtn.addEventListener('click', () => {
+  const isHidden = actionPasswordInput.type === 'password';
+  actionPasswordInput.type = isHidden ? 'text' : 'password';
+  actionPasswordEyeBtn.textContent = isHidden ? '🙈' : '👁';
+  actionPasswordInput.focus();
+});
+
+function askActionPassword(message){
+  return new Promise((resolve) => {
+    passwordModalMsg.textContent = message;
+    passwordModalError.textContent = '';
+    actionPasswordInput.value = '';
+    actionPasswordInput.type = 'password';
+    actionPasswordEyeBtn.textContent = '👁';
+    passwordModalOverlay.hidden = false;
+    actionPasswordInput.focus();
+
+    function cleanup(result){
+      passwordModalOverlay.hidden = true;
+      passwordModalConfirmBtn.removeEventListener('click', onConfirm);
+      passwordModalCancelBtn.removeEventListener('click', onCancel);
+      passwordModalOverlay.removeEventListener('click', onBackdrop);
+      actionPasswordInput.removeEventListener('keydown', onKeydown);
+      resolve(result);
+    }
+    function onConfirm(){
+      if (actionPasswordInput.value === ACTION_PASSWORD) {
+        cleanup(true);
+      } else {
+        passwordModalError.textContent = '✗ Mật khẩu không đúng, vui lòng thử lại.';
+        actionPasswordInput.value = '';
+        actionPasswordInput.focus();
+      }
+    }
+    function onCancel(){ cleanup(false); }
+    function onBackdrop(e){ if (e.target === passwordModalOverlay) cleanup(false); }
+    function onKeydown(e){
+      if (e.key === 'Enter') { e.preventDefault(); onConfirm(); }
+      else if (e.key === 'Escape') { onCancel(); }
+    }
+
+    passwordModalConfirmBtn.addEventListener('click', onConfirm);
+    passwordModalCancelBtn.addEventListener('click', onCancel);
+    passwordModalOverlay.addEventListener('click', onBackdrop);
+    actionPasswordInput.addEventListener('keydown', onKeydown);
+  });
+}
 
 const tabButtons = document.querySelectorAll('.tab-btn');
 const panels = { add: document.getElementById('panel-add'), list: document.getElementById('panel-list') };
 
+function switchTab(tab){
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  Object.keys(panels).forEach(k => panels[k].hidden = (k !== tab));
+}
+
 tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    Object.keys(panels).forEach(k => panels[k].hidden = (k !== btn.dataset.tab));
+    switchTab(btn.dataset.tab);
     if (btn.dataset.tab === 'list') loadProducts();
   });
 });
 
 /* ---------- Image upload handling ---------- */
 const imageData = { hinhAnhTongThe: null, hinhAnhMatTruoc: null, hinhAnhMatNgang: null };
+const imgLabelMap = { hinhAnhTongThe:'Tổng Thể', hinhAnhMatTruoc:'Mặt Trước', hinhAnhMatNgang:'Mặt Ngang' };
 
-document.querySelectorAll('.img-slot').forEach(slot => {
+function attachSlotFileInput(slot){
   const input = slot.querySelector('input[type=file]');
-  slot.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-x')) return;
-    input.click();
-  });
   input.addEventListener('change', () => {
     const file = input.files[0];
     if (!file) return;
     resizeImageToBase64(file, 1400, 0.82).then(({dataUrl, base64, mimeType}) => {
       imageData[slot.dataset.slot] = { data: base64, mimeType, filename: file.name };
-      slot.innerHTML = `
-        <img src="${dataUrl}" alt="preview">
-        <button type="button" class="remove-x">✕</button>
-      `;
-      slot.querySelector('.remove-x').addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        imageData[slot.dataset.slot] = null;
-        resetSlot(slot);
-      });
-    });
-  });
-});
-
-function resetSlot(slot){
-  const labelMap = { hinhAnhTongThe:'Tổng Thể', hinhAnhMatTruoc:'Mặt Trước', hinhAnhMatNgang:'Mặt Ngang' };
-  slot.innerHTML = `
-    <span class="icon">📷</span>
-    <span class="label-txt">${labelMap[slot.dataset.slot]}</span>
-    <input type="file" accept="image/*">
-  `;
-  const newInput = slot.querySelector('input[type=file]');
-  newInput.addEventListener('change', function(){
-    const file = newInput.files[0];
-    if (!file) return;
-    resizeImageToBase64(file, 1400, 0.82).then(({dataUrl, base64, mimeType}) => {
-      imageData[slot.dataset.slot] = { data: base64, mimeType, filename: file.name };
-      slot.innerHTML = `<img src="${dataUrl}" alt="preview"><button type="button" class="remove-x">✕</button>`;
-      slot.querySelector('.remove-x').addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        imageData[slot.dataset.slot] = null;
-        resetSlot(slot);
-      });
+      showSlotImage(slot, dataUrl);
     });
   });
 }
+
+function showSlotImage(slot, src){
+  slot.innerHTML = `
+    <img src="${src}" alt="preview">
+    <button type="button" class="remove-x">✕</button>
+    <input type="file" accept="image/*">
+  `;
+  slot.querySelector('.remove-x').addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    imageData[slot.dataset.slot] = null;
+    resetSlot(slot);
+  });
+  attachSlotFileInput(slot);
+}
+
+function resetSlot(slot){
+  slot.innerHTML = `
+    <span class="icon">📷</span>
+    <span class="label-txt">${imgLabelMap[slot.dataset.slot]}</span>
+    <input type="file" accept="image/*">
+  `;
+  attachSlotFileInput(slot);
+}
+
+document.querySelectorAll('.img-slot').forEach(slot => {
+  slot.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-x')) return;
+    slot.querySelector('input[type=file]').click();
+  });
+  attachSlotFileInput(slot);
+});
 
 // Resize ảnh trước khi upload để giảm dung lượng, trả về base64 (không kèm prefix)
 function resizeImageToBase64(file, maxDim, quality){
@@ -426,10 +555,53 @@ function resizeImageToBase64(file, maxDim, quality){
   });
 }
 
-/* ---------- Form submit ---------- */
+/* ---------- Form submit (thêm mới / cập nhật) ---------- */
 const form = document.getElementById('productForm');
 const submitBtn = document.getElementById('submitBtn');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
 const statusMsg = document.getElementById('statusMsg');
+
+let editingStt = null; // null = đang thêm mới; khác null = đang sửa sản phẩm có STT này
+
+function resetFormState(){
+  editingStt = null;
+  form.reset();
+  Object.keys(imageData).forEach(k => imageData[k] = null);
+  document.querySelectorAll('.img-slot').forEach(resetSlot);
+  submitBtn.textContent = 'Lưu Sản Phẩm';
+  cancelEditBtn.hidden = true;
+  statusMsg.textContent = '';
+  statusMsg.className = 'status-msg';
+}
+
+function enterEditMode(p){
+  editingStt = p.stt;
+
+  document.getElementById('tenSanPham').value = p.tenSanPham || '';
+  document.getElementById('nhomSanPham').value = p.nhomSanPham || '';
+  document.getElementById('kichThuoc').value = p.kichThuoc || '';
+  document.getElementById('quyCachDong').value = p.quyCachDong || '';
+  document.getElementById('hanSuDung').value = p.hanSuDung || '';
+  document.getElementById('moTaSanPham').value = p.moTaSanPham || '';
+  document.getElementById('cachBaoQuan').value = p.cachBaoQuan || '';
+
+  document.querySelectorAll('.img-slot').forEach(slot => {
+    const url = p[slot.dataset.slot] || null;
+    imageData[slot.dataset.slot] = url;
+    if (url) showSlotImage(slot, url); else resetSlot(slot);
+  });
+
+  submitBtn.textContent = 'Cập Nhật Sản Phẩm';
+  cancelEditBtn.hidden = false;
+  statusMsg.textContent = '';
+  statusMsg.className = 'status-msg';
+
+  modalOverlay.hidden = true;
+  switchTab('add');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+cancelEditBtn.addEventListener('click', resetFormState);
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -440,7 +612,10 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
+  const isEditing = editingStt !== null;
+
   const payload = {
+    action: isEditing ? 'update' : 'add',
     tenSanPham: document.getElementById('tenSanPham').value.trim(),
     nhomSanPham: document.getElementById('nhomSanPham').value,
     quyCachDong: document.getElementById('quyCachDong').value.trim(),
@@ -452,9 +627,10 @@ form.addEventListener('submit', async (e) => {
     hinhAnhMatTruoc: imageData.hinhAnhMatTruoc,
     hinhAnhMatNgang: imageData.hinhAnhMatNgang
   };
+  if (isEditing) payload.stt = editingStt;
 
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Đang lưu...';
+  submitBtn.textContent = isEditing ? 'Đang cập nhật...' : 'Đang lưu...';
   statusMsg.textContent = '';
 
   try {
@@ -465,11 +641,17 @@ form.addEventListener('submit', async (e) => {
     });
     const result = await res.json();
     if (result.success) {
-      statusMsg.textContent = `✓ Đã lưu sản phẩm (STT ${result.stt})`;
-      statusMsg.className = 'status-msg ok';
-      form.reset();
-      Object.keys(imageData).forEach(k => imageData[k] = null);
-      document.querySelectorAll('.img-slot').forEach(resetSlot);
+      if (isEditing) {
+        resetFormState();
+        switchTab('list');
+        await loadProducts();
+      } else {
+        statusMsg.textContent = `✓ Đã lưu sản phẩm (STT ${result.stt})`;
+        statusMsg.className = 'status-msg ok';
+        form.reset();
+        Object.keys(imageData).forEach(k => imageData[k] = null);
+        document.querySelectorAll('.img-slot').forEach(resetSlot);
+      }
     } else {
       throw new Error(result.error || 'Lỗi không xác định');
     }
@@ -478,7 +660,7 @@ form.addEventListener('submit', async (e) => {
     statusMsg.className = 'status-msg err';
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Lưu Sản Phẩm';
+    submitBtn.textContent = editingStt !== null ? 'Cập Nhật Sản Phẩm' : 'Lưu Sản Phẩm';
   }
 });
 
@@ -549,6 +731,25 @@ document.getElementById('refreshBtn').addEventListener('click', loadProducts);
 const modalOverlay = document.getElementById('modalOverlay');
 const modalBox = document.getElementById('modalBox');
 
+async function deleteProduct(p){
+  const ok = await askActionPassword(`Xoá sản phẩm "${p.tenSanPham}"? Hành động này không thể hoàn tác — nhập mật khẩu để xác nhận.`);
+  if (!ok) return;
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete', stt: p.stt })
+    });
+    const result = await res.json();
+    if (!result.success) throw new Error(result.error || 'Lỗi không xác định');
+    modalOverlay.hidden = true;
+    await loadProducts();
+  } catch (err) {
+    alert('✗ Xoá thất bại: ' + err.message);
+  }
+}
+
 function openModal(p){
   modalBox.innerHTML = `
     <button class="modal-close" id="modalCloseBtn">✕</button>
@@ -564,9 +765,18 @@ function openModal(p){
     <div class="modal-field"><div class="k">Kích Thước</div><div class="v">${escapeHtml(p.kichThuoc || '—')}</div></div>
     <div class="modal-field"><div class="k">Hạn Sử Dụng</div><div class="v">${escapeHtml(p.hanSuDung || '—')}</div></div>
     <div class="modal-field"><div class="k">Cách Bảo Quản</div><div class="v">${escapeHtml(p.cachBaoQuan || '—')}</div></div>
+    <div class="modal-actions">
+      <button type="button" class="primary" id="modalEditBtn">✏️ Sửa Thông Tin</button>
+      <button type="button" class="danger" id="modalDeleteBtn">🗑️ Xoá Sản Phẩm</button>
+    </div>
   `;
   modalOverlay.hidden = false;
   document.getElementById('modalCloseBtn').addEventListener('click', () => modalOverlay.hidden = true);
+  document.getElementById('modalEditBtn').addEventListener('click', async () => {
+    const ok = await askActionPassword(`Nhập mật khẩu để chỉnh sửa sản phẩm "${p.tenSanPham}".`);
+    if (ok) enterEditMode(p);
+  });
+  document.getElementById('modalDeleteBtn').addEventListener('click', () => deleteProduct(p));
 }
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.hidden = true; });
 </script>
