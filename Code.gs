@@ -129,23 +129,20 @@ function jsonOut_(obj) {
 }
 
 /**
- * (Tuỳ chọn) Chạy 1 LẦN nếu bạn đã có sẵn sản phẩm với ảnh bị lỗi "không xem được"
- * — do dùng link cũ dạng uc?export=view, hoặc do dán tay link xem trước của Drive
- * (dạng drive.google.com/file/d/xxxx/view) thay vì link ảnh trực tiếp.
- * Hàm này quét cả sheet, với mỗi ô link ảnh:
- * - Đổi sang định dạng ảnh trực tiếp (lh3.googleusercontent.com) nếu chưa đúng
+ * Quét cột ảnh (I, J, K) và tự động chuẩn hoá mọi link chưa đúng định dạng —
+ * link cũ dạng uc?export=view, hoặc link dán tay từ Drive (drive.google.com/file/d/xxxx/view):
+ * - Đổi sang định dạng ảnh trực tiếp (lh3.googleusercontent.com)
  * - Tự set quyền chia sẻ file trên Drive thành "Anyone with the link — Viewer",
  *   vì nếu link dán tay mà file chưa public thì đổi link xong ảnh vẫn không hiện
  *   cho người khác xem
- * Chỉ sửa được quyền của những file mà tài khoản chạy script này sở hữu hoặc có
- * quyền chỉnh sửa — file không thể set quyền sẽ được bỏ qua và ghi log lại.
- * Không tải lại ảnh, không tạo file Drive mới, chỉ sửa link trong Sheet + quyền file.
- * Chọn "fixExistingImageLinks" ở dropdown rồi bấm ▶ Run.
+ * Chỉ sửa được quyền của những file mà tài khoản chạy script sở hữu hoặc có quyền
+ * chỉnh sửa — file không thể set quyền sẽ được bỏ qua (báo trong permissionFailed).
+ * Được gọi tự động mỗi khi doGet() chạy (mỗi lần app tải danh sách sản phẩm), nên
+ * không cần chạy tay — dán link vào Sheet xong, lần tải danh sách kế tiếp sẽ tự sửa.
  */
-function fixExistingImageLinks() {
-  var sheet = getOrCreateSheet_();
+function normalizeImageLinks_(sheet) {
   var lastRow = sheet.getLastRow();
-  if (lastRow < 2) { Logger.log('Chưa có dữ liệu để sửa.'); return; }
+  if (lastRow < 2) return { changed: 0, permissionFailed: [] };
 
   var range = sheet.getRange(2, 9, lastRow - 1, 3); // cột I, J, K
   var values = range.getValues();
@@ -155,30 +152,39 @@ function fixExistingImageLinks() {
   for (var i = 0; i < values.length; i++) {
     for (var j = 0; j < 3; j++) {
       var url = values[i][j];
-      if (!url) continue;
+      if (!url || String(url).indexOf('lh3.googleusercontent.com') !== -1) continue; // đã đúng định dạng
+
       var match = String(url).match(/[-\w]{20,}/); // lấy Drive file ID trong link
       if (!match) continue;
       var fileId = match[0];
 
       try {
-        var file = DriveApp.getFileById(fileId);
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        DriveApp.getFileById(fileId).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
       } catch (err) {
         permissionFailed.push('Dòng ' + (i + 2) + ', cột ' + (j === 0 ? 'I' : j === 1 ? 'J' : 'K') + ': ' + err.toString());
       }
 
-      if (url.indexOf('lh3.googleusercontent.com') === -1) {
-        values[i][j] = 'https://lh3.googleusercontent.com/d/' + fileId + '=w1600';
-        changed++;
-      }
+      values[i][j] = 'https://lh3.googleusercontent.com/d/' + fileId + '=w1600';
+      changed++;
     }
   }
 
-  range.setValues(values);
-  Logger.log('Đã sửa ' + changed + ' link ảnh.');
-  if (permissionFailed.length > 0) {
-    Logger.log('Không tự set được quyền cho ' + permissionFailed.length + ' file (có thể không sở hữu file đó):');
-    Logger.log(permissionFailed.join('\n'));
+  if (changed > 0) range.setValues(values);
+  return { changed: changed, permissionFailed: permissionFailed };
+}
+
+/**
+ * (Tuỳ chọn) Chạy tay hàm này nếu muốn xem log ngay — nhưng không bắt buộc nữa,
+ * vì doGet() đã tự gọi normalizeImageLinks_() mỗi lần tải danh sách sản phẩm.
+ * Chọn "fixExistingImageLinks" ở dropdown rồi bấm ▶ Run.
+ */
+function fixExistingImageLinks() {
+  var sheet = getOrCreateSheet_();
+  var result = normalizeImageLinks_(sheet);
+  Logger.log('Đã sửa ' + result.changed + ' link ảnh.');
+  if (result.permissionFailed.length > 0) {
+    Logger.log('Không tự set được quyền cho ' + result.permissionFailed.length + ' file (có thể không sở hữu file đó):');
+    Logger.log(result.permissionFailed.join('\n'));
   }
 }
 
@@ -198,6 +204,7 @@ function findRowBySTT_(sheet, stt) {
 function doGet(e) {
   try {
     var sheet = getOrCreateSheet_();
+    normalizeImageLinks_(sheet);
     var lastRow = sheet.getLastRow();
     var data = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues() : [];
 
