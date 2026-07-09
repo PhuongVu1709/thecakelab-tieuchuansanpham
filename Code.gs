@@ -130,9 +130,16 @@ function jsonOut_(obj) {
 
 /**
  * (Tuỳ chọn) Chạy 1 LẦN nếu bạn đã có sẵn sản phẩm với ảnh bị lỗi "không xem được"
- * (do dùng link cũ dạng uc?export=view). Hàm này quét cả sheet, tìm các ô link ảnh
- * dạng cũ và tự động đổi sang định dạng mới (lh3.googleusercontent.com) — không cần
- * tải lại ảnh, không tạo file Drive mới, chỉ sửa lại đường link trong Sheet.
+ * — do dùng link cũ dạng uc?export=view, hoặc do dán tay link xem trước của Drive
+ * (dạng drive.google.com/file/d/xxxx/view) thay vì link ảnh trực tiếp.
+ * Hàm này quét cả sheet, với mỗi ô link ảnh:
+ * - Đổi sang định dạng ảnh trực tiếp (lh3.googleusercontent.com) nếu chưa đúng
+ * - Tự set quyền chia sẻ file trên Drive thành "Anyone with the link — Viewer",
+ *   vì nếu link dán tay mà file chưa public thì đổi link xong ảnh vẫn không hiện
+ *   cho người khác xem
+ * Chỉ sửa được quyền của những file mà tài khoản chạy script này sở hữu hoặc có
+ * quyền chỉnh sửa — file không thể set quyền sẽ được bỏ qua và ghi log lại.
+ * Không tải lại ảnh, không tạo file Drive mới, chỉ sửa link trong Sheet + quyền file.
  * Chọn "fixExistingImageLinks" ở dropdown rồi bấm ▶ Run.
  */
 function fixExistingImageLinks() {
@@ -143,14 +150,25 @@ function fixExistingImageLinks() {
   var range = sheet.getRange(2, 9, lastRow - 1, 3); // cột I, J, K
   var values = range.getValues();
   var changed = 0;
+  var permissionFailed = [];
 
   for (var i = 0; i < values.length; i++) {
     for (var j = 0; j < 3; j++) {
       var url = values[i][j];
       if (!url) continue;
-      var match = String(url).match(/[-\w]{20,}/); // lấy Drive file ID trong link cũ
-      if (match && url.indexOf('lh3.googleusercontent.com') === -1) {
-        values[i][j] = 'https://lh3.googleusercontent.com/d/' + match[0] + '=w1600';
+      var match = String(url).match(/[-\w]{20,}/); // lấy Drive file ID trong link
+      if (!match) continue;
+      var fileId = match[0];
+
+      try {
+        var file = DriveApp.getFileById(fileId);
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (err) {
+        permissionFailed.push('Dòng ' + (i + 2) + ', cột ' + (j === 0 ? 'I' : j === 1 ? 'J' : 'K') + ': ' + err.toString());
+      }
+
+      if (url.indexOf('lh3.googleusercontent.com') === -1) {
+        values[i][j] = 'https://lh3.googleusercontent.com/d/' + fileId + '=w1600';
         changed++;
       }
     }
@@ -158,6 +176,10 @@ function fixExistingImageLinks() {
 
   range.setValues(values);
   Logger.log('Đã sửa ' + changed + ' link ảnh.');
+  if (permissionFailed.length > 0) {
+    Logger.log('Không tự set được quyền cho ' + permissionFailed.length + ' file (có thể không sở hữu file đó):');
+    Logger.log(permissionFailed.join('\n'));
+  }
 }
 
 // Tìm số thứ tự dòng trong sheet (1-based, kể cả header) ứng với 1 giá trị STT.
