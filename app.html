@@ -36,12 +36,15 @@
     --shadow: 0 8px 24px rgba(3,44,125,0.08);
   }
   *{box-sizing:border-box;}
+  html, body{ height:100%; }
   body{
     margin:0;
     background:var(--cream);
     color:var(--ink);
     font-family:'Poppins', sans-serif;
-    min-height:100vh;
+    height:100vh; height:100dvh;
+    display:flex; flex-direction:column;
+    overflow:hidden;
   }
   header.top{
     background:var(--cream);
@@ -49,6 +52,7 @@
     padding:calc(26px + env(safe-area-inset-top)) 20px 40px;
     position:relative;
     overflow:hidden;
+    flex-shrink:0;
   }
   header.top::after{
     content:"";
@@ -85,6 +89,7 @@
     max-width:920px; margin:-24px auto 0; padding:0 20px;
     position:relative; z-index:2;
     display:flex; gap:8px;
+    flex-shrink:0;
   }
   .tab-btn{
     flex:1;
@@ -97,7 +102,11 @@
   }
   .tab-btn.active{ background:var(--card); color:var(--orange-dark); }
 
-  main{max-width:920px; margin:0 auto; padding:0 20px calc(60px + env(safe-area-inset-bottom));}
+  main{
+    max-width:920px; margin:0 auto; padding:0 20px calc(60px + env(safe-area-inset-bottom));
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    display:flex; flex-direction:column;
+  }
   .panel{
     background:var(--card);
     border-radius:0 16px 16px 16px;
@@ -105,7 +114,7 @@
     padding:26px;
   }
   .panel[hidden]{display:none;}
-  #panel-list:not([hidden]){display:flex; flex-direction:column;}
+  #panel-list:not([hidden]){display:flex; flex-direction:column; flex:1 1 auto; min-height:0;}
 
   .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 18px;}
   .field{display:flex; flex-direction:column; gap:6px;}
@@ -186,6 +195,7 @@
   .grid-list{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px;
     grid-auto-rows:max-content; align-content:start;
+    flex:1 1 auto; min-height:0;
     overflow-y:auto; padding-right:4px;
   }
   .prod-card{
@@ -477,16 +487,6 @@ function askActionPassword(message){
 const tabButtons = document.querySelectorAll('.tab-btn');
 const panels = { add: document.getElementById('panel-add'), list: document.getElementById('panel-list') };
 
-// Giới hạn chiều cao khung danh sách sản phẩm theo khoảng trống còn lại của màn hình,
-// để bản thân nó cuộn bên trong thay vì cuộn cả trang — tab/ô tìm kiếm luôn đứng yên phía trên.
-function updateListScrollHeight(){
-  const el = document.getElementById('listContainer');
-  if (!el || panels.list.hidden) return;
-  const available = window.innerHeight - el.getBoundingClientRect().top - 24;
-  el.style.maxHeight = Math.max(available, 240) + 'px';
-}
-window.addEventListener('resize', updateListScrollHeight);
-
 function switchTab(tab){
   tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   Object.keys(panels).forEach(k => panels[k].hidden = (k !== tab));
@@ -497,7 +497,6 @@ tabButtons.forEach(btn => {
     switchTab(btn.dataset.tab);
     if (btn.dataset.tab === 'list') {
       loadProducts();
-      updateListScrollHeight();
     }
   });
 });
