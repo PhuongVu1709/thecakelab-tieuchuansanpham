@@ -185,6 +185,7 @@
 
   .grid-list{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px;
+    grid-auto-rows:max-content; align-content:start;
     overflow-y:auto; padding-right:4px;
   }
   .prod-card{
@@ -192,11 +193,8 @@
     background:#FFFDF9; display:flex; flex-direction:column;
     cursor:pointer;
   }
-  .prod-card .thumb-wrap{
-    position:relative; width:100%; background:#EFE6D6; overflow:hidden;
-  }
   .prod-card .thumb{
-    position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;
+    width:100%; aspect-ratio:1/1; object-fit:cover; background:#EFE6D6;
     display:block;
   }
   .prod-card .thumb.placeholder{
@@ -231,8 +229,7 @@
   }
   .modal-box h2{font-family:'Playfair Display', serif; margin-top:0; color:var(--orange); font-weight:600;}
   .modal-imgs{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px;}
-  .modal-imgs .img-wrap{position:relative; width:100%; background:#EFE6D6; border-radius:10px; overflow:hidden;}
-  .modal-imgs .img-wrap img{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .modal-imgs img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; background:#EFE6D6;}
   .modal-imgs .cap{font-size:10.5px; text-align:center; color:var(--muted); margin-top:3px;}
   .modal-field{margin-bottom:10px;}
   .modal-field .k{font-size:11px; font-weight:700; text-transform:uppercase; color:var(--orange); letter-spacing:0.04em;}
@@ -726,11 +723,9 @@ function renderList(){
 
   container.innerHTML = filtered.map((p, idx) => `
     <div class="prod-card" data-idx="${allProducts.indexOf(p)}">
-      <div class="thumb-wrap">
-        ${p.hinhAnhTongThe
-          ? `<img class="thumb" src="${p.hinhAnhTongThe}" alt="${escapeHtml(p.tenSanPham)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;thumb placeholder&quot;>🍰</div>'">`
-          : `<div class="thumb placeholder">🍰</div>`}
-      </div>
+      ${p.hinhAnhTongThe
+        ? `<img class="thumb" src="${p.hinhAnhTongThe}" alt="${escapeHtml(p.tenSanPham)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;thumb placeholder&quot;>🍰</div>'">`
+        : `<div class="thumb placeholder">🍰</div>`}
       <div class="body">
         <h3>${escapeHtml(p.tenSanPham || '(Chưa đặt tên)')}</h3>
       </div>
@@ -740,23 +735,7 @@ function renderList(){
   container.querySelectorAll('.prod-card').forEach(card => {
     card.addEventListener('click', () => openModal(allProducts[card.dataset.idx]));
   });
-
-  squareThumbWraps(container);
 }
-
-// Ép chiều cao khung ảnh bằng đúng chiều rộng đo được (thay vì dựa vào
-// CSS aspect-ratio/padding-top phần trăm) — một số trình duyệt di động
-// (Safari trên iPhone) tính sai layout với các kỹ thuật CSS thuần,
-// nên đặt chiều cao bằng px cụ thể qua JS để chắc chắn luôn vuông.
-function squareThumbWraps(root){
-  root.querySelectorAll('.thumb-wrap, .img-wrap').forEach(w => {
-    w.style.height = w.getBoundingClientRect().width + 'px';
-  });
-}
-window.addEventListener('resize', () => {
-  squareThumbWraps(document.getElementById('listContainer'));
-  if (!modalOverlay.hidden) squareThumbWraps(modalBox);
-});
 
 function escapeHtml(str){
   return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -795,9 +774,9 @@ function openModal(p){
     <h2>${escapeHtml(p.tenSanPham)}</h2>
     <span class="group-tag">${escapeHtml(p.nhomSanPham || '—')}</span>
     <div class="modal-imgs" style="margin-top:14px;">
-      <div><div class="img-wrap"><img src="${p.hinhAnhTongThe || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Tổng thể</div></div>
-      <div><div class="img-wrap"><img src="${p.hinhAnhMatTruoc || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Mặt trước</div></div>
-      <div><div class="img-wrap"><img src="${p.hinhAnhMatNgang || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Mặt ngang</div></div>
+      <div><img src="${p.hinhAnhTongThe || ''}" onerror="this.style.opacity=0.2"><div class="cap">Tổng thể</div></div>
+      <div><img src="${p.hinhAnhMatTruoc || ''}" onerror="this.style.opacity=0.2"><div class="cap">Mặt trước</div></div>
+      <div><img src="${p.hinhAnhMatNgang || ''}" onerror="this.style.opacity=0.2"><div class="cap">Mặt ngang</div></div>
     </div>
     <div class="modal-field"><div class="k">Quy Cách Đóng</div><div class="v">${escapeHtml(p.quyCachDong || '—')}</div></div>
     <div class="modal-field"><div class="k">Mô Tả Sản Phẩm</div><div class="v">${escapeHtml(p.moTaSanPham || '—')}</div></div>
@@ -810,7 +789,6 @@ function openModal(p){
     </div>
   `;
   modalOverlay.hidden = false;
-  squareThumbWraps(modalBox);
   document.getElementById('modalCloseBtn').addEventListener('click', () => modalOverlay.hidden = true);
   document.getElementById('modalEditBtn').addEventListener('click', async () => {
     const ok = await askActionPassword(`Nhập mật khẩu để chỉnh sửa sản phẩm "${p.tenSanPham}".`);
