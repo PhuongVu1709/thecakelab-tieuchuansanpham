@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>The Cake Lab — Tiêu Chuẩn Sản Phẩm</title>
 <script>
   if (sessionStorage.getItem('tcl_authenticated') !== 'true') {
@@ -46,7 +46,7 @@
   header.top{
     background:var(--cream);
     color:var(--ink);
-    padding:26px 20px 40px;
+    padding:calc(26px + env(safe-area-inset-top)) 20px 40px;
     position:relative;
     overflow:hidden;
   }
@@ -97,7 +97,7 @@
   }
   .tab-btn.active{ background:var(--card); color:var(--orange-dark); }
 
-  main{max-width:920px; margin:0 auto; padding:0 20px 60px;}
+  main{max-width:920px; margin:0 auto; padding:0 20px calc(60px + env(safe-area-inset-bottom));}
   .panel{
     background:var(--card);
     border-radius:0 16px 16px 16px;
