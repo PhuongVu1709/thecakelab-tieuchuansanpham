@@ -192,8 +192,11 @@
     background:#FFFDF9; display:flex; flex-direction:column;
     cursor:pointer;
   }
+  .prod-card .thumb-wrap{
+    position:relative; width:100%; padding-top:100%; background:#EFE6D6; overflow:hidden;
+  }
   .prod-card .thumb{
-    width:100%; aspect-ratio:1/1; object-fit:cover; background:#EFE6D6;
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
     display:block;
   }
   .prod-card .thumb.placeholder{
@@ -228,7 +231,8 @@
   }
   .modal-box h2{font-family:'Playfair Display', serif; margin-top:0; color:var(--orange); font-weight:600;}
   .modal-imgs{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px;}
-  .modal-imgs img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; background:#EFE6D6;}
+  .modal-imgs .img-wrap{position:relative; width:100%; padding-top:100%; background:#EFE6D6; border-radius:10px; overflow:hidden;}
+  .modal-imgs .img-wrap img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
   .modal-imgs .cap{font-size:10.5px; text-align:center; color:var(--muted); margin-top:3px;}
   .modal-field{margin-bottom:10px;}
   .modal-field .k{font-size:11px; font-weight:700; text-transform:uppercase; color:var(--orange); letter-spacing:0.04em;}
@@ -722,9 +726,11 @@ function renderList(){
 
   container.innerHTML = filtered.map((p, idx) => `
     <div class="prod-card" data-idx="${allProducts.indexOf(p)}">
-      ${p.hinhAnhTongThe
-        ? `<img class="thumb" src="${p.hinhAnhTongThe}" alt="${escapeHtml(p.tenSanPham)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;thumb placeholder&quot;>🍰</div>'">`
-        : `<div class="thumb placeholder">🍰</div>`}
+      <div class="thumb-wrap">
+        ${p.hinhAnhTongThe
+          ? `<img class="thumb" src="${p.hinhAnhTongThe}" alt="${escapeHtml(p.tenSanPham)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;thumb placeholder&quot;>🍰</div>'">`
+          : `<div class="thumb placeholder">🍰</div>`}
+      </div>
       <div class="body">
         <h3>${escapeHtml(p.tenSanPham || '(Chưa đặt tên)')}</h3>
       </div>
@@ -773,9 +779,9 @@ function openModal(p){
     <h2>${escapeHtml(p.tenSanPham)}</h2>
     <span class="group-tag">${escapeHtml(p.nhomSanPham || '—')}</span>
     <div class="modal-imgs" style="margin-top:14px;">
-      <div><img src="${p.hinhAnhTongThe || ''}" onerror="this.style.opacity=0.2"><div class="cap">Tổng thể</div></div>
-      <div><img src="${p.hinhAnhMatTruoc || ''}" onerror="this.style.opacity=0.2"><div class="cap">Mặt trước</div></div>
-      <div><img src="${p.hinhAnhMatNgang || ''}" onerror="this.style.opacity=0.2"><div class="cap">Mặt ngang</div></div>
+      <div><div class="img-wrap"><img src="${p.hinhAnhTongThe || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Tổng thể</div></div>
+      <div><div class="img-wrap"><img src="${p.hinhAnhMatTruoc || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Mặt trước</div></div>
+      <div><div class="img-wrap"><img src="${p.hinhAnhMatNgang || ''}" onerror="this.style.opacity=0.2"></div><div class="cap">Mặt ngang</div></div>
     </div>
     <div class="modal-field"><div class="k">Quy Cách Đóng</div><div class="v">${escapeHtml(p.quyCachDong || '—')}</div></div>
     <div class="modal-field"><div class="k">Mô Tả Sản Phẩm</div><div class="v">${escapeHtml(p.moTaSanPham || '—')}</div></div>
