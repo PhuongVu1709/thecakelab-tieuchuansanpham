@@ -105,6 +105,7 @@
     padding:26px;
   }
   .panel[hidden]{display:none;}
+  #panel-list:not([hidden]){display:flex; flex-direction:column;}
 
   .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 18px;}
   .field{display:flex; flex-direction:column; gap:6px;}
@@ -178,11 +179,14 @@
   .status-msg.ok{color:var(--success);}
   .status-msg.err{color:var(--error);}
 
-  .toolbar{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+  .toolbar{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; flex-shrink:0;}
   .toolbar input[type=text]{flex:2; min-width:180px;}
   .toolbar select{flex:1; min-width:150px;}
 
-  .grid-list{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px;}
+  .grid-list{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px;
+    overflow-y:auto; padding-right:4px;
+  }
   .prod-card{
     border:1px solid var(--line); border-radius:10px; overflow:hidden;
     background:#FFFDF9; display:flex; flex-direction:column;
@@ -472,6 +476,16 @@ function askActionPassword(message){
 const tabButtons = document.querySelectorAll('.tab-btn');
 const panels = { add: document.getElementById('panel-add'), list: document.getElementById('panel-list') };
 
+// Giới hạn chiều cao khung danh sách sản phẩm theo khoảng trống còn lại của màn hình,
+// để bản thân nó cuộn bên trong thay vì cuộn cả trang — tab/ô tìm kiếm luôn đứng yên phía trên.
+function updateListScrollHeight(){
+  const el = document.getElementById('listContainer');
+  if (!el || panels.list.hidden) return;
+  const available = window.innerHeight - el.getBoundingClientRect().top - 24;
+  el.style.maxHeight = Math.max(available, 240) + 'px';
+}
+window.addEventListener('resize', updateListScrollHeight);
+
 function switchTab(tab){
   tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   Object.keys(panels).forEach(k => panels[k].hidden = (k !== tab));
@@ -480,7 +494,10 @@ function switchTab(tab){
 tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     switchTab(btn.dataset.tab);
-    if (btn.dataset.tab === 'list') loadProducts();
+    if (btn.dataset.tab === 'list') {
+      loadProducts();
+      updateListScrollHeight();
+    }
   });
 });
 
